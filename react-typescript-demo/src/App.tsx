@@ -1,5 +1,4 @@
-import { UserContextProvider } from './components/context/UserContext';
-import { User } from './components/context/User';
+import { Counter } from './components/state/Counter';
 import './App.css';
 
 
@@ -8,9 +7,7 @@ import './App.css';
 function App() {
   return( 
   <div className='App'>
-    <UserContextProvider>
-      <User />
-    </UserContextProvider>
+ 
   </div>
   )
 }
