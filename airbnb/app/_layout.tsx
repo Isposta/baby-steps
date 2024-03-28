@@ -6,8 +6,22 @@ import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { TouchableOpacity } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
+import { ClerkProvider , useAuth } from '@clerk/clerk-expo'
 
 
+const CLERK_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+const tokenCache = {
+  async getToken(key: string) {
+   try {
+    return SecureStore.getItemAsync (key);
+   } catch (err) {
+    return null;
+   }
+  },
+  
+};
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -44,11 +58,23 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+  <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
+  <RootLayoutNav />
+  </ClerkProvider>
+  );
 }
 
 function RootLayoutNav() {
   const router = useRouter();
+  const { isLoaded, isSignedIn } = useAuth();
+
+  useEffect ( () => {
+    if (isLoaded && !isSignedIn)
+    router.push('/(modals)/login')
+  }, [isLoaded] )
+
+
   
 
   return (
